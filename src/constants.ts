@@ -1,1 +1,1 @@
-export const UUID_VERSION = 4;
+export const UUID_VERSION = 4 as const;
