@@ -56,7 +56,7 @@ To run only one of all test suites
 npm run test -- <path to suite>
 ```
 
-__Node:__ Before running any test case you must run application (see `Running application`)
+__Note:__ Before running any test case you must run application (see `Running application`)
 
 <!-- To run all test with authorization
 
