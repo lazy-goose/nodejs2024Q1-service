@@ -25,20 +25,15 @@ __Note:__ `.env` file will be automatically created from `.env.example` file.
 npm run start
 ```
 
-After starting the app on port (4000 as default)
-<!-- you can open
+After starting the app on port (4000 as default) you can open
 in your browser OpenAPI documentation by typing http://localhost:4000/doc/.
-For more information about OpenAPI/Swagger please visit https://swagger.io/. -->
+For more information about OpenAPI/Swagger please visit https://swagger.io/.
 
 To run the application with automatic restart use:
 
 ```bash
 npm run start:dev
 ```
-
-## Swagger
-
-To preview `doc/api.ymp` file, you can use the VSCode extension: `Arjun.swagger-viewer`.
 
 ## Testing
 
