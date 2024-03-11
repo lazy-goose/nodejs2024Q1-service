@@ -13,11 +13,11 @@ import { UpdateUserPasswordDto } from '../../users/dto/update-user-password.dto'
 export class UsersDatabaseService implements DatabaseService {
   private users: User[] = [];
 
-  getAll() {
+  findAll() {
     return this.users.map(this.omitPassword);
   }
 
-  private getOneByIdWithPassword(id: ID) {
+  private findOneWithPassword(id: ID) {
     const user = this.users.find((u) => u.id === id);
     if (!user) {
       throw new NotFoundException('User not found');
@@ -31,8 +31,8 @@ export class UsersDatabaseService implements DatabaseService {
     return fields;
   }
 
-  getOneById(id: ID) {
-    const user = this.getOneByIdWithPassword(id);
+  findOne(id: ID) {
+    const user = this.findOneWithPassword(id);
     return this.omitPassword(user);
   }
 
@@ -50,7 +50,7 @@ export class UsersDatabaseService implements DatabaseService {
   }
 
   updatePassword(id: ID, updateUserPasswordDto: UpdateUserPasswordDto) {
-    const currentUser = this.getOneByIdWithPassword(id);
+    const currentUser = this.findOneWithPassword(id);
     const { oldPassword, newPassword } = updateUserPasswordDto;
     if (currentUser.password !== oldPassword) {
       throw new ForbiddenException('Wrong user password');
@@ -62,7 +62,7 @@ export class UsersDatabaseService implements DatabaseService {
   }
 
   delete(id: ID) {
-    const currentUser = this.getOneByIdWithPassword(id);
+    const currentUser = this.findOneWithPassword(id);
     this.users = this.users.filter((u) => u.id !== id);
     return this.omitPassword(currentUser);
   }

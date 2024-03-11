@@ -42,23 +42,23 @@ export class FavoritesDatabaseService implements DatabaseService {
       .filter((v) => v !== null);
   }
 
-  getAll() {
+  findAll() {
     return {
       albums: this.mapResolve(this.favorites.albums, (id) =>
-        this.albumsService.getOneById(id),
+        this.albumsService.findOne(id),
       ),
       artists: this.mapResolve(this.favorites.artists, (id) =>
-        this.artistsService.getOneById(id),
+        this.artistsService.findOne(id),
       ),
       tracks: this.mapResolve(this.favorites.tracks, (id) =>
-        this.tracksService.getOneById(id),
+        this.tracksService.findOne(id),
       ),
     };
   }
 
   addAlbum(albumId: ID) {
     const album = this.getEntity(albumId, (id) =>
-      this.albumsService.getOneById(id),
+      this.albumsService.findOne(id),
     );
     if (!album) {
       throw new UnprocessableEntityException(`Album '${albumId}' not found`);
@@ -80,7 +80,7 @@ export class FavoritesDatabaseService implements DatabaseService {
 
   addArtist(artistId: ID) {
     const artist = this.getEntity(artistId, (id) =>
-      this.artistsService.getOneById(id),
+      this.artistsService.findOne(id),
     );
     if (!artist) {
       throw new UnprocessableEntityException(`Artist '${artistId}' not found`);
@@ -104,7 +104,7 @@ export class FavoritesDatabaseService implements DatabaseService {
 
   addTrack(trackId: ID) {
     const track = this.getEntity(trackId, (id) =>
-      this.tracksService.getOneById(id),
+      this.tracksService.findOne(id),
     );
     if (!track) {
       throw new UnprocessableEntityException(`Track '${trackId}' not found`);

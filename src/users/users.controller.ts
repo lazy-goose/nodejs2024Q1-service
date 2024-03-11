@@ -18,13 +18,13 @@ export class UsersController {
   constructor(private usersService: UsersService) {}
 
   @Get()
-  getAll() {
-    return this.usersService.getAll();
+  findAll() {
+    return this.usersService.findAll();
   }
 
   @Get(':id')
-  getOneById(@UUIDParam('id') id: ID) {
-    return this.usersService.getOneById(id);
+  findOne(@UUIDParam('id') id: ID) {
+    return this.usersService.findOne(id);
   }
 
   @Post()

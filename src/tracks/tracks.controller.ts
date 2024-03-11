@@ -17,13 +17,13 @@ export class TracksController {
   constructor(private readonly tracksService: TracksService) {}
 
   @Get()
-  getAll() {
-    return this.tracksService.getAll();
+  findAll() {
+    return this.tracksService.findAll();
   }
 
   @Get(':id')
-  getOneById(@UUIDParam('id') id: string) {
-    return this.tracksService.getOneById(id);
+  findOne(@UUIDParam('id') id: string) {
+    return this.tracksService.findOne(id);
   }
 
   @Post()

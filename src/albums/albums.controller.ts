@@ -17,13 +17,13 @@ export class AlbumsController {
   constructor(private readonly albumsService: AlbumsService) {}
 
   @Get()
-  getAll() {
-    return this.albumsService.getAll();
+  findAll() {
+    return this.albumsService.findAll();
   }
 
   @Get(':id')
-  getOneById(@UUIDParam('id') id: string) {
-    return this.albumsService.getOneById(id);
+  findOne(@UUIDParam('id') id: string) {
+    return this.albumsService.findOne(id);
   }
 
   @Post()

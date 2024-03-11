@@ -23,11 +23,11 @@ export class AlbumsDatabaseService implements DatabaseService {
     private readonly favoritesService: FavoritesDatabaseService,
   ) {}
 
-  getAll() {
+  findAll() {
     return this.albums;
   }
 
-  getOneById(id: ID) {
+  findOne(id: ID) {
     const album = this.albums.find((a) => a.id === id);
     if (!album) {
       throw new NotFoundException('Album not found');
@@ -45,13 +45,13 @@ export class AlbumsDatabaseService implements DatabaseService {
   }
 
   update(id: ID, updateAlbumDto: UpdateAlbumDto) {
-    const currentAlbum = this.getOneById(id);
+    const currentAlbum = this.findOne(id);
     const updatedAlbum = Object.assign(currentAlbum, updateAlbumDto);
     return updatedAlbum;
   }
 
   delete(id: ID) {
-    const currentAlbum = this.getOneById(id);
+    const currentAlbum = this.findOne(id);
     this.albums = this.albums.filter((a) => a.id !== id);
     this.tracksService.unboundAlbum(id);
     this.favoritesService.unboundAlbum(id);

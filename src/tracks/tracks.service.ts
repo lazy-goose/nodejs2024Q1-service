@@ -8,12 +8,12 @@ import { ID } from 'src/database/types/models';
 export class TracksService {
   constructor(private readonly database: DatabaseService) {}
 
-  getAll() {
-    return this.database.tracksService.getAll();
+  findAll() {
+    return this.database.tracksService.findAll();
   }
 
-  getOneById(id: ID) {
-    return this.database.tracksService.getOneById(id);
+  findOne(id: ID) {
+    return this.database.tracksService.findOne(id);
   }
 
   create(createTrackDto: CreateTrackDto) {

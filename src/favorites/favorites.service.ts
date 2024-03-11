@@ -6,8 +6,8 @@ import { ID } from 'src/database/types/models';
 export class FavoritesService {
   constructor(private readonly database: DatabaseService) {}
 
-  getAll() {
-    return this.database.favoritesService.getAll();
+  findAll() {
+    return this.database.favoritesService.findAll();
   }
 
   addAlbum(id: ID) {

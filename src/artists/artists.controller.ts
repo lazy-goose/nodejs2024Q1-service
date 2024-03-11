@@ -17,13 +17,13 @@ export class ArtistsController {
   constructor(private readonly artistsService: ArtistsService) {}
 
   @Get()
-  getAll() {
-    return this.artistsService.getAll();
+  findAll() {
+    return this.artistsService.findAll();
   }
 
   @Get(':id')
-  getOneById(@UUIDParam('id') id: string) {
-    return this.artistsService.getOneById(id);
+  findOne(@UUIDParam('id') id: string) {
+    return this.artistsService.findOne(id);
   }
 
   @Post()

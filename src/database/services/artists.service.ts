@@ -26,11 +26,11 @@ export class ArtistsDatabaseService implements DatabaseService {
     private readonly favoritesService: FavoritesDatabaseService,
   ) {}
 
-  getAll() {
+  findAll() {
     return this.artists;
   }
 
-  getOneById(id: ID) {
+  findOne(id: ID) {
     const artist = this.artists.find((a) => a.id === id);
     if (!artist) {
       throw new NotFoundException('Artist not found');
@@ -48,13 +48,13 @@ export class ArtistsDatabaseService implements DatabaseService {
   }
 
   update(id: ID, updateArtistDto: UpdateArtistDto) {
-    const currentArtist = this.getOneById(id);
+    const currentArtist = this.findOne(id);
     const updatedArtist = Object.assign(currentArtist, updateArtistDto);
     return updatedArtist;
   }
 
   delete(id: ID) {
-    const currentArtist = this.getOneById(id);
+    const currentArtist = this.findOne(id);
     this.artists = this.artists.filter((a) => a.id !== id);
     this.albumsService.unboundArtist(id);
     this.tracksService.unboundArtist(id);

@@ -8,12 +8,12 @@ import { ID } from 'src/database/types/models';
 export class UsersService {
   constructor(private readonly database: DatabaseService) {}
 
-  getAll() {
-    return this.database.usersService.getAll();
+  findAll() {
+    return this.database.usersService.findAll();
   }
 
-  getOneById(id: ID) {
-    return this.database.usersService.getOneById(id);
+  findOne(id: ID) {
+    return this.database.usersService.findOne(id);
   }
 
   create(createUserDto: CreateUserDto) {

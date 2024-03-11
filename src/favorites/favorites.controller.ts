@@ -7,8 +7,8 @@ export class FavoritesController {
   constructor(private readonly favoritesService: FavoritesService) {}
 
   @Get()
-  getAll() {
-    return this.favoritesService.getAll();
+  findAll() {
+    return this.favoritesService.findAll();
   }
 
   @Post('album/:id')

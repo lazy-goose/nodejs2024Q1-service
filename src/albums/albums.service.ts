@@ -8,12 +8,12 @@ import { ID } from 'src/database/types/models';
 export class AlbumsService {
   constructor(private readonly database: DatabaseService) {}
 
-  getAll() {
-    return this.database.albumsService.getAll();
+  findAll() {
+    return this.database.albumsService.findAll();
   }
 
-  getOneById(id: ID) {
-    return this.database.albumsService.getOneById(id);
+  findOne(id: ID) {
+    return this.database.albumsService.findOne(id);
   }
 
   create(createAlbumDto: CreateAlbumDto) {
