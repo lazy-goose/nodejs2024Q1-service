@@ -4,10 +4,10 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { generateUUID } from 'src/utils/uuid';
-import DatabaseService from '../types/DatabaseService';
-import { ID, User } from '../types/models';
 import { CreateUserDto } from '../../users/dto/create-user.dto';
 import { UpdateUserPasswordDto } from '../../users/dto/update-user-password.dto';
+import DatabaseService from '../types/DatabaseService';
+import { ID, User } from '../types/models';
 
 @Injectable()
 export class UsersDatabaseService implements DatabaseService {

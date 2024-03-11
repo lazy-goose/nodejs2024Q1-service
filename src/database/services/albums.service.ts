@@ -5,10 +5,10 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { generateUUID } from 'src/utils/uuid';
-import DatabaseService from '../types/DatabaseService';
-import { Album, ID } from '../types/models';
 import { CreateAlbumDto } from '../../albums/dto/create-album.dto';
 import { UpdateAlbumDto } from '../../albums/dto/update-album.dto';
+import DatabaseService from '../types/DatabaseService';
+import { Album, ID } from '../types/models';
 import { FavoritesDatabaseService } from './favorites.service';
 import { TracksDatabaseService } from './tracks.service';
 

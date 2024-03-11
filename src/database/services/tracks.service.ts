@@ -5,10 +5,10 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { generateUUID } from 'src/utils/uuid';
-import DatabaseService from '../types/DatabaseService';
-import { ID, Track } from '../types/models';
 import { CreateTrackDto } from '../../tracks/dto/create-track.dto';
 import { UpdateTrackDto } from '../../tracks/dto/update-track.dto';
+import DatabaseService from '../types/DatabaseService';
+import { ID, Track } from '../types/models';
 import { FavoritesDatabaseService } from './favorites.service';
 
 @Injectable()
