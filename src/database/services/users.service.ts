@@ -6,8 +6,8 @@ import {
 import { generateUUID } from 'src/utils/uuid';
 import DatabaseService from '../types/DatabaseService';
 import { ID, User } from '../types/models';
-import { CreateUserDto } from './dto/users/create-user.dto';
-import { UpdateUserPasswordDto } from './dto/users/update-user-password.dto';
+import { CreateUserDto } from '../../users/dto/create-user.dto';
+import { UpdateUserPasswordDto } from '../../users/dto/update-user-password.dto';
 
 @Injectable()
 export class UsersDatabaseService implements DatabaseService {

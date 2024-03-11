@@ -7,8 +7,8 @@ import {
   Post,
   Put,
 } from '@nestjs/common';
-import { CreateArtistDto } from 'src/database/services/dto/artists/create-artist.dto';
-import { UpdateArtistDto } from 'src/database/services/dto/artists/update-artist.dto';
+import { CreateArtistDto } from 'src/artists/dto/create-artist.dto';
+import { UpdateArtistDto } from 'src/artists/dto/update-artist.dto';
 import { UUIDParam } from 'src/utils/uuid';
 import { ArtistsService } from './artists.service';
 

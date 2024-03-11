@@ -7,8 +7,8 @@ import {
 import { generateUUID } from 'src/utils/uuid';
 import DatabaseService from '../types/DatabaseService';
 import { Album, ID } from '../types/models';
-import { CreateAlbumDto } from './dto/albums/create-album.dto';
-import { UpdateAlbumDto } from './dto/albums/update-album.dto';
+import { CreateAlbumDto } from '../../albums/dto/create-album.dto';
+import { UpdateAlbumDto } from '../../albums/dto/update-album.dto';
 import { FavoritesDatabaseService } from './favorites.service';
 import { TracksDatabaseService } from './tracks.service';
 

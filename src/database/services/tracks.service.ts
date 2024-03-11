@@ -7,8 +7,8 @@ import {
 import { generateUUID } from 'src/utils/uuid';
 import DatabaseService from '../types/DatabaseService';
 import { ID, Track } from '../types/models';
-import { CreateTrackDto } from './dto/tracks/create-track.dto';
-import { UpdateTrackDto } from './dto/tracks/update-track.dto';
+import { CreateTrackDto } from '../../tracks/dto/create-track.dto';
+import { UpdateTrackDto } from '../../tracks/dto/update-track.dto';
 import { FavoritesDatabaseService } from './favorites.service';
 
 @Injectable()

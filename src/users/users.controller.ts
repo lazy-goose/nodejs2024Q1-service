@@ -7,8 +7,8 @@ import {
   Post,
   Put,
 } from '@nestjs/common';
-import { CreateUserDto } from 'src/database/services/dto/users/create-user.dto';
-import { UpdateUserPasswordDto } from 'src/database/services/dto/users/update-user-password.dto';
+import { CreateUserDto } from 'src/users/dto/create-user.dto';
+import { UpdateUserPasswordDto } from 'src/users/dto/update-user-password.dto';
 import { ID } from 'src/database/types/models';
 import { UUIDParam } from 'src/utils/uuid';
 import { UsersService } from './users.service';

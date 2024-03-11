@@ -7,8 +7,8 @@ import {
   Post,
   Put,
 } from '@nestjs/common';
-import { CreateAlbumDto } from 'src/database/services/dto/albums/create-album.dto';
-import { UpdateAlbumDto } from 'src/database/services/dto/albums/update-album.dto';
+import { CreateAlbumDto } from 'src/albums/dto/create-album.dto';
+import { UpdateAlbumDto } from 'src/albums/dto/update-album.dto';
 import { UUIDParam } from 'src/utils/uuid';
 import { AlbumsService } from './albums.service';
 

@@ -8,8 +8,8 @@ import { generateUUID } from 'src/utils/uuid';
 import DatabaseService from '../types/DatabaseService';
 import { Artist, ID } from '../types/models';
 import { AlbumsDatabaseService } from './albums.service';
-import { CreateArtistDto } from './dto/artists/create-artist.dto';
-import { UpdateArtistDto } from './dto/artists/update-artist.dto';
+import { CreateArtistDto } from '../../artists/dto/create-artist.dto';
+import { UpdateArtistDto } from '../../artists/dto/update-artist.dto';
 import { FavoritesDatabaseService } from './favorites.service';
 import { TracksDatabaseService } from './tracks.service';
 
