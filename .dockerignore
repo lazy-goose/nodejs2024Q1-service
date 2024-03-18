@@ -1,0 +1,28 @@
+# Environment variables
+.env
+
+# Git
+.git/
+.gitignore
+
+# Build
+dist/
+node_modules/
+
+# Configs
+.dockerignore
+.editorconfig
+.eslintrc*
+.prettierrc*
+.nvmrc
+.vscode/
+.github/
+
+# Test
+test/
+coverage/
+jest.config.json
+
+# Other
+*.md
+LICENSE

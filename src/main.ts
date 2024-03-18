@@ -13,7 +13,7 @@ async function bootstrap() {
 
   const configService = app.get(ConfigService);
 
-  const port = Number(configService.get('PORT'));
+  const port = Number(configService.get('APP_PORT'));
 
   const openApiFile = await fs.readFile('doc/api.yaml');
   SwaggerModule.setup('doc', app, yaml.parse(openApiFile.toString()));
