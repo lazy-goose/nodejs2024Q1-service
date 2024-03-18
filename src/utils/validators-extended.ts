@@ -1,10 +1,10 @@
 import { applyDecorators } from '@nestjs/common';
-import { MinLength } from 'class-validator';
 import {
   MaxLength,
+  MinLength,
   ValidateIf,
   ValidationOptions,
-} from 'class-validator-stable';
+} from 'class-validator';
 
 export function IsNull(validationOptions?: ValidationOptions) {
   return ValidateIf((_object, value) => value !== null, validationOptions);
