@@ -1,64 +1,39 @@
-import {
-  forwardRef,
-  Inject,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
-import { generateUUID } from 'src/utils/uuid';
-import { CreateArtistDto } from '../../artists/dto/create-artist.dto';
-import { UpdateArtistDto } from '../../artists/dto/update-artist.dto';
+import { Injectable } from '@nestjs/common';
+import { Prisma } from '@prisma/client';
+import { PrismaService } from '../prisma/prisma.service';
 import DatabaseService from '../types/DatabaseService';
-import { Artist, ID } from '../types/models';
-import { AlbumsDatabaseService } from './albums.service';
-import { FavoritesDatabaseService } from './favorites.service';
-import { TracksDatabaseService } from './tracks.service';
+import { ID } from '../types/Types';
+import { ArtistEntity } from './entities/artist.entity';
 
 @Injectable()
 export class ArtistsDatabaseService implements DatabaseService {
-  private artists: Artist[] = [];
+  constructor(private readonly prisma: PrismaService) {}
 
-  constructor(
-    @Inject(forwardRef(() => AlbumsDatabaseService))
-    private readonly albumsService: AlbumsDatabaseService,
-    @Inject(forwardRef(() => TracksDatabaseService))
-    private readonly tracksService: TracksDatabaseService,
-    @Inject(forwardRef(() => FavoritesDatabaseService))
-    private readonly favoritesService: FavoritesDatabaseService,
-  ) {}
-
-  findAll() {
-    return this.artists;
+  async findAll() {
+    const foundArray = await this.prisma.artist.findMany();
+    return foundArray.map((f) => new ArtistEntity(f));
   }
 
-  findOne(id: ID) {
-    const artist = this.artists.find((a) => a.id === id);
-    if (!artist) {
-      throw new NotFoundException('Artist not found');
-    }
-    return artist;
+  async findOne(id: ID) {
+    const found = await this.prisma.artist.findUniqueOrThrow({ where: { id } });
+    return new ArtistEntity(found);
   }
 
-  create(createArtistDto: CreateArtistDto) {
-    const newArtist = {
-      id: generateUUID(),
-      ...createArtistDto,
-    };
-    this.artists.push(newArtist);
-    return newArtist;
+  async create(createArtistDto: Prisma.ArtistCreateInput) {
+    const created = await this.prisma.artist.create({ data: createArtistDto });
+    return new ArtistEntity(created);
   }
 
-  update(id: ID, updateArtistDto: UpdateArtistDto) {
-    const currentArtist = this.findOne(id);
-    const updatedArtist = Object.assign(currentArtist, updateArtistDto);
-    return updatedArtist;
+  async update(id: ID, updateArtistDto: Prisma.ArtistUpdateInput) {
+    const updated = await this.prisma.artist.update({
+      where: { id },
+      data: updateArtistDto,
+    });
+    return new ArtistEntity(updated);
   }
 
-  delete(id: ID) {
-    const currentArtist = this.findOne(id);
-    this.artists = this.artists.filter((a) => a.id !== id);
-    this.albumsService.unboundArtist(id);
-    this.tracksService.unboundArtist(id);
-    this.favoritesService.unboundArtist(id);
-    return currentArtist;
+  async delete(id: ID) {
+    const deleted = await this.prisma.artist.delete({ where: { id } });
+    return new ArtistEntity(deleted);
   }
 }

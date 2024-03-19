@@ -1,69 +1,54 @@
-import {
-  ForbiddenException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
-import { generateUUID } from 'src/utils/uuid';
-import { CreateUserDto } from '../../users/dto/create-user.dto';
+import { ForbiddenException, Injectable } from '@nestjs/common';
+import { CreateUserDto } from 'src/users/dto/create-user.dto';
 import { UpdateUserPasswordDto } from '../../users/dto/update-user-password.dto';
+import { PrismaService } from '../prisma/prisma.service';
 import DatabaseService from '../types/DatabaseService';
-import { ID, User } from '../types/models';
+import { ID } from '../types/Types';
+import { UserEntity } from './entities/user.entity';
 
 @Injectable()
 export class UsersDatabaseService implements DatabaseService {
-  private users: User[] = [];
+  constructor(private readonly prisma: PrismaService) {}
 
-  findAll() {
-    return this.users.map(this.omitPassword);
+  private async findOneRaw(id: ID) {
+    return this.prisma.user.findUniqueOrThrow({ where: { id } });
   }
 
-  private findOneWithPassword(id: ID) {
-    const user = this.users.find((u) => u.id === id);
-    if (!user) {
-      throw new NotFoundException('User not found');
-    }
-    return user;
+  async findAll() {
+    const foundArray = await this.prisma.user.findMany();
+    return foundArray.map((f) => new UserEntity(f));
   }
 
-  private omitPassword(user: User) {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { password, ...fields } = user;
-    return fields;
+  async findOne(id: ID) {
+    const found = await this.findOneRaw(id);
+    return new UserEntity(found);
   }
 
-  findOne(id: ID) {
-    const user = this.findOneWithPassword(id);
-    return this.omitPassword(user);
+  async create(createUserDto: CreateUserDto) {
+    const created = await this.prisma.user.create({ data: createUserDto });
+    return new UserEntity(created);
   }
 
-  create(createUserDto: CreateUserDto) {
-    const createDate = Date.now();
-    const newUser = {
-      id: generateUUID(),
-      version: 1,
-      createdAt: createDate,
-      updatedAt: createDate,
-      ...createUserDto,
-    };
-    this.users.push(newUser);
-    return this.omitPassword(newUser);
-  }
-
-  updatePassword(id: ID, updateUserPasswordDto: UpdateUserPasswordDto) {
-    const currentUser = this.findOneWithPassword(id);
+  async updatePassword(id: ID, updateUserPasswordDto: UpdateUserPasswordDto) {
     const { oldPassword, newPassword } = updateUserPasswordDto;
-    if (currentUser.password !== oldPassword) {
+    const current = await this.findOneRaw(id);
+    if (current.password !== oldPassword) {
       throw new ForbiddenException('Wrong user password');
     }
-    currentUser.password = newPassword;
-    currentUser.version++;
-    currentUser.updatedAt = Date.now();
-    return this.omitPassword(currentUser);
+    const updated = await this.prisma.user.update({
+      where: { id },
+      data: {
+        password: newPassword,
+        version: {
+          increment: 1,
+        },
+      },
+    });
+    return new UserEntity(updated);
   }
 
-  delete(id: ID) {
-    const currentUser = this.findOneWithPassword(id);
-    this.users = this.users.filter((u) => u.id !== id);
-    return this.omitPassword(currentUser);
+  async delete(id: ID) {
+    const deleted = await this.prisma.user.delete({ where: { id } });
+    return new UserEntity(deleted);
   }
 }

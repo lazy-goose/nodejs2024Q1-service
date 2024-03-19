@@ -1,36 +1,36 @@
 import { Injectable } from '@nestjs/common';
 import { DatabaseService } from 'src/database/database.service';
-import { ID } from 'src/database/types/models';
+import { ID } from 'src/database/types/Types';
 
 @Injectable()
 export class FavoritesService {
   constructor(private readonly database: DatabaseService) {}
 
-  findAll() {
+  async findAll() {
     return this.database.favoritesService.findAll();
   }
 
-  addAlbum(id: ID) {
+  async addAlbum(id: ID) {
     return this.database.favoritesService.addAlbum(id);
   }
 
-  deleteAlbum(id: ID) {
+  async deleteAlbum(id: ID) {
     return this.database.favoritesService.deleteAlbum(id);
   }
 
-  addArtist(id: ID) {
+  async addArtist(id: ID) {
     return this.database.favoritesService.addArtist(id);
   }
 
-  deleteArtist(id: ID) {
+  async deleteArtist(id: ID) {
     return this.database.favoritesService.deleteArtist(id);
   }
 
-  addTrack(id: ID) {
+  async addTrack(id: ID) {
     return this.database.favoritesService.addTrack(id);
   }
 
-  deleteTrack(id: ID) {
+  async deleteTrack(id: ID) {
     return this.database.favoritesService.deleteTrack(id);
   }
 }

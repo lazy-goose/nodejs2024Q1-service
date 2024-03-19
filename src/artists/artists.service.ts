@@ -1,30 +1,29 @@
 import { Injectable } from '@nestjs/common';
-import { CreateArtistDto } from 'src/artists/dto/create-artist.dto';
-import { UpdateArtistDto } from 'src/artists/dto/update-artist.dto';
+import { Prisma } from '@prisma/client';
 import { DatabaseService } from 'src/database/database.service';
-import { ID } from 'src/database/types/models';
+import { ID } from 'src/database/types/Types';
 
 @Injectable()
 export class ArtistsService {
   constructor(private readonly database: DatabaseService) {}
 
-  findAll() {
+  async findAll() {
     return this.database.artistsService.findAll();
   }
 
-  findOne(id: ID) {
+  async findOne(id: ID) {
     return this.database.artistsService.findOne(id);
   }
 
-  create(CreateArtistDto: CreateArtistDto) {
-    return this.database.artistsService.create(CreateArtistDto);
+  async create(createArtistDto: Prisma.ArtistCreateInput) {
+    return this.database.artistsService.create(createArtistDto);
   }
 
-  update(id: ID, updateArtistDto: UpdateArtistDto) {
+  async update(id: ID, updateArtistDto: Prisma.ArtistUpdateInput) {
     return this.database.artistsService.update(id, updateArtistDto);
   }
 
-  delete(id: ID) {
+  async delete(id: ID) {
     return this.database.artistsService.delete(id);
   }
 }

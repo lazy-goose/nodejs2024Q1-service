@@ -1,5 +1,4 @@
 import { Param, ParseUUIDPipe } from '@nestjs/common';
-import { UUID_VERSION } from 'src/constants';
 import { v4 as uuidv4, validate } from 'uuid';
 
 export function generateUUID() {
@@ -11,5 +10,5 @@ export function isUUID(string: string) {
 }
 
 export function UUIDParam(name: string) {
-  return Param(name, new ParseUUIDPipe({ version: `${UUID_VERSION}` }));
+  return Param(name, new ParseUUIDPipe({ version: '4' }));
 }

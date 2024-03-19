@@ -1,72 +1,39 @@
-import {
-  forwardRef,
-  Inject,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
-import { generateUUID } from 'src/utils/uuid';
-import { CreateTrackDto } from '../../tracks/dto/create-track.dto';
-import { UpdateTrackDto } from '../../tracks/dto/update-track.dto';
+import { Injectable } from '@nestjs/common';
+import { Prisma } from '@prisma/client';
+import { PrismaService } from '../prisma/prisma.service';
 import DatabaseService from '../types/DatabaseService';
-import { ID, Track } from '../types/models';
-import { FavoritesDatabaseService } from './favorites.service';
+import { ID } from '../types/Types';
+import { TrackEntity } from './entities/track.entity';
 
 @Injectable()
 export class TracksDatabaseService implements DatabaseService {
-  private tracks: Track[] = [];
+  constructor(private readonly prisma: PrismaService) {}
 
-  constructor(
-    @Inject(forwardRef(() => FavoritesDatabaseService))
-    private readonly favoritesService: FavoritesDatabaseService,
-  ) {}
-
-  findAll() {
-    return this.tracks;
+  async findAll() {
+    const foundArray = await this.prisma.track.findMany();
+    return foundArray.map((f) => new TrackEntity(f));
   }
 
-  findOne(id: ID) {
-    const track = this.tracks.find((t) => t.id === id);
-    if (!track) {
-      throw new NotFoundException('Track not found');
-    }
-    return track;
+  async findOne(id: ID) {
+    const found = await this.prisma.track.findUniqueOrThrow({ where: { id } });
+    return new TrackEntity(found);
   }
 
-  create(createTrackDto: CreateTrackDto) {
-    const newTrack = {
-      id: generateUUID(),
-      ...createTrackDto,
-    };
-    this.tracks.push(newTrack);
-    return newTrack;
+  async create(createTrackDto: Prisma.TrackCreateInput) {
+    const created = await this.prisma.track.create({ data: createTrackDto });
+    return new TrackEntity(created);
   }
 
-  update(id: ID, updateTrackDto: UpdateTrackDto) {
-    const currentTrack = this.findOne(id);
-    const updatedTrack = Object.assign(currentTrack, updateTrackDto);
-    return updatedTrack;
-  }
-
-  delete(id: ID) {
-    const currentTrack = this.findOne(id);
-    this.tracks = this.tracks.filter((t) => t.id !== id);
-    this.favoritesService.unboundTrack(id);
-    return currentTrack;
-  }
-
-  unboundAlbum(albumId: ID) {
-    this.tracks.forEach((t) => {
-      if (t.albumId === albumId) {
-        t.albumId = null;
-      }
+  async update(id: ID, updateTrackDto: Prisma.TrackUpdateInput) {
+    const updated = await this.prisma.track.update({
+      where: { id },
+      data: updateTrackDto,
     });
+    return new TrackEntity(updated);
   }
 
-  unboundArtist(artistId: ID) {
-    this.tracks.forEach((t) => {
-      if (t.artistId === artistId) {
-        t.artistId = null;
-      }
-    });
+  async delete(id: ID) {
+    const deleted = await this.prisma.track.delete({ where: { id } });
+    return new TrackEntity(deleted);
   }
 }

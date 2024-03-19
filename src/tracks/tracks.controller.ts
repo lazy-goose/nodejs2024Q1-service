@@ -4,12 +4,12 @@ import {
   Delete,
   Get,
   HttpCode,
+  HttpStatus,
   Post,
   Put,
 } from '@nestjs/common';
-import { CreateTrackDto } from 'src/tracks/dto/create-track.dto';
-import { UpdateTrackDto } from 'src/tracks/dto/update-track.dto';
-import { UUIDParam } from 'src/utils/uuid';
+import { Prisma } from '@prisma/client';
+import { UUIDParam } from 'src/common/utils/uuid';
 import { TracksService } from './tracks.service';
 
 @Controller('track')
@@ -17,28 +17,31 @@ export class TracksController {
   constructor(private readonly tracksService: TracksService) {}
 
   @Get()
-  findAll() {
+  async findAll() {
     return this.tracksService.findAll();
   }
 
   @Get(':id')
-  findOne(@UUIDParam('id') id: string) {
+  async findOne(@UUIDParam('id') id: string) {
     return this.tracksService.findOne(id);
   }
 
   @Post()
-  create(@Body() createTrackDto: CreateTrackDto) {
+  async create(@Body() createTrackDto: Prisma.TrackCreateInput) {
     return this.tracksService.create(createTrackDto);
   }
 
   @Put(':id')
-  update(@UUIDParam('id') id: string, @Body() updateTrackDto: UpdateTrackDto) {
+  async update(
+    @UUIDParam('id') id: string,
+    @Body() updateTrackDto: Prisma.TrackUpdateInput,
+  ) {
     return this.tracksService.update(id, updateTrackDto);
   }
 
   @Delete(':id')
-  @HttpCode(204)
-  delete(@UUIDParam('id') id: string) {
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async delete(@UUIDParam('id') id: string) {
     return this.tracksService.delete(id);
   }
 }

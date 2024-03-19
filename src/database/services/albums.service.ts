@@ -1,68 +1,39 @@
-import {
-  forwardRef,
-  Inject,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
-import { generateUUID } from 'src/utils/uuid';
-import { CreateAlbumDto } from '../../albums/dto/create-album.dto';
-import { UpdateAlbumDto } from '../../albums/dto/update-album.dto';
+import { Injectable } from '@nestjs/common';
+import { Prisma } from '@prisma/client';
+import { PrismaService } from '../prisma/prisma.service';
 import DatabaseService from '../types/DatabaseService';
-import { Album, ID } from '../types/models';
-import { FavoritesDatabaseService } from './favorites.service';
-import { TracksDatabaseService } from './tracks.service';
+import { ID } from '../types/Types';
+import { AlbumEntity } from './entities/album.entity';
 
 @Injectable()
 export class AlbumsDatabaseService implements DatabaseService {
-  private albums: Album[] = [];
+  constructor(private readonly prisma: PrismaService) {}
 
-  constructor(
-    @Inject(forwardRef(() => TracksDatabaseService))
-    private readonly tracksService: TracksDatabaseService,
-    @Inject(forwardRef(() => FavoritesDatabaseService))
-    private readonly favoritesService: FavoritesDatabaseService,
-  ) {}
-
-  findAll() {
-    return this.albums;
+  async findAll() {
+    const foundArray = await this.prisma.album.findMany();
+    return foundArray.map((f) => new AlbumEntity(f));
   }
 
-  findOne(id: ID) {
-    const album = this.albums.find((a) => a.id === id);
-    if (!album) {
-      throw new NotFoundException('Album not found');
-    }
-    return album;
+  async findOne(id: ID) {
+    const found = await this.prisma.album.findUniqueOrThrow({ where: { id } });
+    return new AlbumEntity(found);
   }
 
-  create(createAlbumDto: CreateAlbumDto) {
-    const newAlbum = {
-      id: generateUUID(),
-      ...createAlbumDto,
-    };
-    this.albums.push(newAlbum);
-    return newAlbum;
+  async create(createAlbumDto: Prisma.AlbumCreateInput) {
+    const created = await this.prisma.album.create({ data: createAlbumDto });
+    return new AlbumEntity(created);
   }
 
-  update(id: ID, updateAlbumDto: UpdateAlbumDto) {
-    const currentAlbum = this.findOne(id);
-    const updatedAlbum = Object.assign(currentAlbum, updateAlbumDto);
-    return updatedAlbum;
-  }
-
-  delete(id: ID) {
-    const currentAlbum = this.findOne(id);
-    this.albums = this.albums.filter((a) => a.id !== id);
-    this.tracksService.unboundAlbum(id);
-    this.favoritesService.unboundAlbum(id);
-    return currentAlbum;
-  }
-
-  unboundArtist(artistId: ID) {
-    this.albums.forEach((a) => {
-      if (a.artistId === artistId) {
-        a.artistId = null;
-      }
+  async update(id: ID, updateAlbumDto: Prisma.AlbumUpdateInput) {
+    const updated = await this.prisma.album.update({
+      where: { id },
+      data: updateAlbumDto,
     });
+    return new AlbumEntity(updated);
+  }
+
+  async delete(id: ID) {
+    const deleted = await this.prisma.album.delete({ where: { id } });
+    return new AlbumEntity(deleted);
   }
 }

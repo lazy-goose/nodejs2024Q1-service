@@ -1,144 +1,73 @@
-import {
-  forwardRef,
-  Inject,
-  Injectable,
-  NotFoundException,
-  UnprocessableEntityException,
-} from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
+import { PrismaService } from '../prisma/prisma.service';
 import DatabaseService from '../types/DatabaseService';
-import { Favorites, ID } from '../types/models';
-import { AlbumsDatabaseService } from './albums.service';
-import { ArtistsDatabaseService } from './artists.service';
-import { TracksDatabaseService } from './tracks.service';
+import { ID } from '../types/Types';
+import { AlbumEntity } from './entities/album.entity';
+import { ArtistEntity } from './entities/artist.entity';
+import { TrackEntity } from './entities/track.entity';
 
 @Injectable()
 export class FavoritesDatabaseService implements DatabaseService {
-  private favorites: Favorites = {
-    albums: [],
-    artists: [],
-    tracks: [],
-  };
+  constructor(private readonly prisma: PrismaService) {}
 
-  constructor(
-    @Inject(forwardRef(() => AlbumsDatabaseService))
-    private readonly albumsService: AlbumsDatabaseService,
-    @Inject(forwardRef(() => ArtistsDatabaseService))
-    private readonly artistsService: ArtistsDatabaseService,
-    @Inject(forwardRef(() => TracksDatabaseService))
-    private readonly tracksService: TracksDatabaseService,
-  ) {}
-
-  private getEntity<T>(id: ID, resolver: (id: ID) => T) {
-    try {
-      return resolver(id);
-    } catch {
-      return null;
-    }
-  }
-
-  private mapResolve<T>(ids: ID[], resolver: (id: ID) => T) {
-    return ids
-      .map((id) => this.getEntity(id, resolver))
-      .filter((v) => v !== null);
-  }
-
-  findAll() {
+  async findAll() {
+    const [albums, artists, tracks] = await this.prisma.$transaction([
+      this.prisma.album.findMany({ where: { favorite: true } }),
+      this.prisma.artist.findMany({ where: { favorite: true } }),
+      this.prisma.track.findMany({ where: { favorite: true } }),
+    ]);
     return {
-      albums: this.mapResolve(this.favorites.albums, (id) =>
-        this.albumsService.findOne(id),
-      ),
-      artists: this.mapResolve(this.favorites.artists, (id) =>
-        this.artistsService.findOne(id),
-      ),
-      tracks: this.mapResolve(this.favorites.tracks, (id) =>
-        this.tracksService.findOne(id),
-      ),
+      albums: albums.map((e) => new AlbumEntity(e)),
+      artists: artists.map((e) => new ArtistEntity(e)),
+      tracks: tracks.map((e) => new TrackEntity(e)),
     };
   }
 
-  addAlbum(albumId: ID) {
-    const album = this.getEntity(albumId, (id) =>
-      this.albumsService.findOne(id),
-    );
-    if (!album) {
-      throw new UnprocessableEntityException(`Album '${albumId}' not found`);
-    }
-    if (!this.favorites.albums.includes(albumId)) {
-      this.favorites.albums.push(albumId);
-    }
-    return albumId;
+  async addAlbum(albumId: ID) {
+    const added = await this.prisma.album.update({
+      where: { id: albumId },
+      data: { favorite: true },
+    });
+    return new AlbumEntity(added);
   }
 
-  deleteAlbum(albumId: ID) {
-    if (!this.favorites.albums.includes(albumId)) {
-      throw new NotFoundException(`Album '${albumId}' not found in favorites`);
-    }
-    const targetIndex = this.favorites.albums.indexOf(albumId);
-    this.favorites.albums.splice(targetIndex, 1);
-    return albumId;
+  async deleteAlbum(albumId: ID) {
+    const deleted = await this.prisma.album.update({
+      where: { id: albumId },
+      data: { favorite: false },
+    });
+    return new AlbumEntity(deleted);
   }
 
-  addArtist(artistId: ID) {
-    const artist = this.getEntity(artistId, (id) =>
-      this.artistsService.findOne(id),
-    );
-    if (!artist) {
-      throw new UnprocessableEntityException(`Artist '${artistId}' not found`);
-    }
-    if (!this.favorites.artists.includes(artistId)) {
-      this.favorites.artists.push(artistId);
-    }
-    return artistId;
+  async addArtist(artistId: ID) {
+    const added = await this.prisma.artist.update({
+      where: { id: artistId },
+      data: { favorite: true },
+    });
+    return new ArtistEntity(added);
   }
 
-  deleteArtist(artistId: ID) {
-    if (!this.favorites.artists.includes(artistId)) {
-      throw new NotFoundException(
-        `Artist '${artistId}' not found in favorites`,
-      );
-    }
-    const targetIndex = this.favorites.artists.indexOf(artistId);
-    this.favorites.artists.splice(targetIndex, 1);
-    return artistId;
+  async deleteArtist(artistId: ID) {
+    const deleted = await this.prisma.artist.update({
+      where: { id: artistId },
+      data: { favorite: false },
+    });
+    return new ArtistEntity(deleted);
   }
 
-  addTrack(trackId: ID) {
-    const track = this.getEntity(trackId, (id) =>
-      this.tracksService.findOne(id),
-    );
-    if (!track) {
-      throw new UnprocessableEntityException(`Track '${trackId}' not found`);
-    }
-    if (!this.favorites.tracks.includes(trackId)) {
-      this.favorites.tracks.push(trackId);
-    }
-    return trackId;
+  async addTrack(trackId: ID) {
+    const added = await this.prisma.track.update({
+      where: { id: trackId },
+      data: { favorite: true },
+    });
+    return new TrackEntity(added);
   }
 
-  deleteTrack(trackId: ID) {
-    if (!this.favorites.tracks.includes(trackId)) {
-      throw new NotFoundException(`Track '${trackId}' not found in favorites`);
-    }
-    const targetIndex = this.favorites.tracks.indexOf(trackId);
-    this.favorites.tracks.splice(targetIndex, 1);
-    return trackId;
-  }
-
-  unboundAlbum(albumId: ID) {
-    this.favorites.albums = this.favorites.albums.filter(
-      (aId) => aId !== albumId,
-    );
-  }
-
-  unboundArtist(artistId: ID) {
-    this.favorites.artists = this.favorites.artists.filter(
-      (aId) => aId !== artistId,
-    );
-  }
-
-  unboundTrack(trackId: ID) {
-    this.favorites.tracks = this.favorites.tracks.filter(
-      (tId) => tId !== trackId,
-    );
+  async deleteTrack(trackId: ID) {
+    const deleted = await this.prisma.track.update({
+      where: { id: trackId },
+      data: { favorite: false },
+    });
+    return new TrackEntity(deleted);
   }
 }

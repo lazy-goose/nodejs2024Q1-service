@@ -4,13 +4,13 @@ import {
   Delete,
   Get,
   HttpCode,
+  HttpStatus,
   Post,
   Put,
 } from '@nestjs/common';
-import { ID } from 'src/database/types/models';
-import { CreateUserDto } from 'src/users/dto/create-user.dto';
+import { UUIDParam } from 'src/common/utils/uuid';
 import { UpdateUserPasswordDto } from 'src/users/dto/update-user-password.dto';
-import { UUIDParam } from 'src/utils/uuid';
+import { CreateUserDto } from './dto/create-user.dto';
 import { UsersService } from './users.service';
 
 @Controller('user')
@@ -18,31 +18,31 @@ export class UsersController {
   constructor(private usersService: UsersService) {}
 
   @Get()
-  findAll() {
+  async findAll() {
     return this.usersService.findAll();
   }
 
   @Get(':id')
-  findOne(@UUIDParam('id') id: ID) {
+  async findOne(@UUIDParam('id') id: string) {
     return this.usersService.findOne(id);
   }
 
   @Post()
-  create(@Body() createUserDto: CreateUserDto) {
+  async create(@Body() createUserDto: CreateUserDto) {
     return this.usersService.create(createUserDto);
   }
 
   @Put(':id')
-  updatePassword(
+  async updatePassword(
     @UUIDParam('id') id: string,
     @Body() updateUserPasswordDto: UpdateUserPasswordDto,
   ) {
-    return this.usersService.updatePassword(id, updateUserPasswordDto);
+    return await this.usersService.updatePassword(id, updateUserPasswordDto);
   }
 
   @Delete(':id')
-  @HttpCode(204)
-  delete(@UUIDParam('id') id: string) {
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async delete(@UUIDParam('id') id: string) {
     return this.usersService.delete(id);
   }
 }

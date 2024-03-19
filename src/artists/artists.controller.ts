@@ -4,12 +4,12 @@ import {
   Delete,
   Get,
   HttpCode,
+  HttpStatus,
   Post,
   Put,
 } from '@nestjs/common';
-import { CreateArtistDto } from 'src/artists/dto/create-artist.dto';
-import { UpdateArtistDto } from 'src/artists/dto/update-artist.dto';
-import { UUIDParam } from 'src/utils/uuid';
+import { Prisma } from '@prisma/client';
+import { UUIDParam } from 'src/common/utils/uuid';
 import { ArtistsService } from './artists.service';
 
 @Controller('artist')
@@ -17,31 +17,31 @@ export class ArtistsController {
   constructor(private readonly artistsService: ArtistsService) {}
 
   @Get()
-  findAll() {
+  async findAll() {
     return this.artistsService.findAll();
   }
 
   @Get(':id')
-  findOne(@UUIDParam('id') id: string) {
+  async findOne(@UUIDParam('id') id: string) {
     return this.artistsService.findOne(id);
   }
 
   @Post()
-  create(@Body() createArtistDto: CreateArtistDto) {
+  async create(@Body() createArtistDto: Prisma.ArtistCreateInput) {
     return this.artistsService.create(createArtistDto);
   }
 
   @Put(':id')
-  update(
+  async update(
     @UUIDParam('id') id: string,
-    @Body() updateArtistDto: UpdateArtistDto,
+    @Body() updateArtistDto: Prisma.ArtistUpdateInput,
   ) {
     return this.artistsService.update(id, updateArtistDto);
   }
 
   @Delete(':id')
-  @HttpCode(204)
-  delete(@UUIDParam('id') id: string) {
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async delete(@UUIDParam('id') id: string) {
     return this.artistsService.delete(id);
   }
 }

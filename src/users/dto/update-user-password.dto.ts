@@ -1,5 +1,5 @@
 import { IsNotEmpty, IsString } from 'class-validator';
-import { IsPassword } from 'src/utils/validators-extended';
+import { IsPassword } from 'src/common/utils/class-validator-extended';
 
 export class UpdateUserPasswordDto {
   @IsString()
