@@ -12,9 +12,21 @@ services:
     restart: always
     ports:
       - '${APP_PORT}:${APP_PORT}'
-    volumes:
-      - ./src:/usr/src/app/src
-      - ./prisma:/usr/src/app/prisma
+    environment:
+      DB_HOST: database
+    # volumes:
+    #   - /usr/src/node_modules
+    #   - .:/usr/src/app
+    develop:
+      watch:
+        - action: sync
+          path: src
+          target: /usr/src/app/src
+        - action: sync
+          path: prisma
+          target: /usr/src/app/prisma
+        - action: rebuild
+          path: package.json
     networks:
       - custom_network
     depends_on:
