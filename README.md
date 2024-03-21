@@ -39,7 +39,7 @@ npm install
 
 Docker compose creates two containers:
 
-- app <- node:20-alpine
+- app <- [lazygoose/home-service.app](https://hub.docker.com/r/lazygoose/home-service.app) <- node:20-alpine
 - database <- postgres:alpine
 
 They are connected with each other through user-defined bridge network `custom-network`
@@ -49,7 +49,7 @@ When app container starts it will automatically migrate prisma to test database
 ⚠️ App image pulled from ️DockerHub:
 
 ```bash
-docker pull lazygoose/nodejs2024q1-service-dev
+docker pull lazygoose/home-service.app
 ```
 
 ⚠️ To generate `prisma-client` run `npm run prisma:generate`. It will run `npx prisma generate` inside host and container
@@ -71,6 +71,8 @@ docker compose up
 **Note:** If you do not want to rebuild project on `src/files` change, run only `docker compose up` command
 
 ⚠️ Before running these commands make sure to run `npm install`, it will create `.env` file
+
+⚠️ Before running these commands make sure to run `npm install`, it will create `.env`.
 
 ### Stop docker
 
@@ -95,7 +97,7 @@ docker image ls
 To delete dangling untagged images use:
 
 ```bash
-docker rmi -f $(docker images -f dangling=true -q)
+docker rmi -f $(docker images -q -f dangling=true)
 ```
 
 ## Testing (no authentication)
