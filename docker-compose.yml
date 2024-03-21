@@ -11,7 +11,8 @@ services:
       context: .
     restart: always
     ports:
-      - '9229:9229'
+      - '9229:9229' # Debugger
+      - '5555:${PRISMA_STUDIO_PORT}'
       - '${APP_PORT}:${APP_PORT}'
     environment:
       DB_HOST: database

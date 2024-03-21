@@ -23,7 +23,8 @@
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "docker:cmd": "npx prisma migrate dev && npm run start:debug",
     "docker:scan": "docker scout cves lazygoose/home-service.app && docker scout cves lazygoose/home-service.db",
-    "prisma:generate": "npx prisma generate dev && docker compose run app npx prisma generate dev"
+    "prisma:generate": "npx prisma generate dev && docker compose run app npx prisma generate dev",
+    "prisma:studio": "docker compose exec app npx prisma studio"
   },
   "dependencies": {
     "@nestjs/cli": "^10.3.2",
