@@ -12,7 +12,7 @@ services:
     restart: always
     ports:
       - '9229:9229' # Debugger
-      - '5555:${PRISMA_STUDIO_PORT}'
+      - '${PRISMA_STUDIO_PORT}:${PRISMA_STUDIO_PORT}'
       - '${APP_PORT}:${APP_PORT}'
     environment:
       DB_HOST: database
@@ -42,7 +42,7 @@ services:
       POSTGRES_PASSWORD: ${DB_PASS}
       POSTGRES_DB: ${DB_NAME}
     ports:
-      - '5432:${DB_PORT}'
+      - '${DB_PORT}:5432'
     volumes:
       - postgres-data:/var/lib/postgresql/data
       - postgres-logs:/var/log/postgresql
