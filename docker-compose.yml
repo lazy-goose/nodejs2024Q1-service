@@ -31,7 +31,10 @@ services:
       database:
         condition: service_healthy
   database:
-    image: postgres:alpine
+    image: lazygoose/home-service.db
+    build:
+      context: .
+      dockerfile: ./Dockerfile.database
     restart: always
     environment:
       POSTGRES_USER: ${DB_USER}

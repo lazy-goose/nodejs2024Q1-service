@@ -40,16 +40,20 @@ npm install
 Docker compose creates two containers:
 
 - app <- [lazygoose/home-service.app](https://hub.docker.com/r/lazygoose/home-service.app) <- node:20-alpine
-- database <- postgres:alpine
+- database <- [lazygoose/home-service.db](https://hub.docker.com/r/lazygoose/home-service.db) <- postgres:alpine
 
 They are connected with each other through user-defined bridge network `custom-network`
 
 When app container starts it will automatically migrate prisma to test database
 
-⚠️ App image pulled from ️DockerHub:
+⚠️ App images pulled from ️DockerHub:
 
 ```bash
 docker pull lazygoose/home-service.app
+```
+
+```bash
+docker pull lazygoose/home-service.db
 ```
 
 ⚠️ To generate `prisma-client` run `npm run prisma:generate`. It will run `npx prisma generate` inside host and container
@@ -71,8 +75,6 @@ docker compose up
 **Note:** If you do not want to rebuild project on `src/files` change, run only `docker compose up` command
 
 ⚠️ Before running these commands make sure to run `npm install`, it will create `.env` file
-
-⚠️ Before running these commands make sure to run `npm install`, it will create `.env`.
 
 ### Stop docker
 
