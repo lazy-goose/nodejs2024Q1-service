@@ -1,0 +1,55 @@
+networks:
+  custom_network:
+    driver: bridge
+volumes:
+  postgres-data:
+  postgres-logs:
+services:
+  app:
+    image: lazygoose/home-service.app
+    build:
+      context: .
+    restart: always
+    ports:
+      - '9229:9229' # Debugger
+      - '${PRISMA_STUDIO_PORT}:${PRISMA_STUDIO_PORT}'
+      - '${APP_PORT}:${APP_PORT}'
+    environment:
+      DB_HOST: database
+    develop:
+      watch:
+        - action: sync
+          path: src
+          target: /usr/src/app/src
+        - action: sync
+          path: prisma
+          target: /usr/src/app/prisma
+        - action: rebuild
+          path: package.json
+    networks:
+      - custom_network
+    depends_on:
+      database:
+        condition: service_healthy
+  database:
+    image: lazygoose/home-service.db
+    build:
+      context: .
+      dockerfile: ./Dockerfile.database
+    restart: always
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASS}
+      POSTGRES_DB: ${DB_NAME}
+    ports:
+      - '${DB_PORT}:5432'
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - postgres-logs:/var/log/postgresql
+    networks:
+      - custom_network
+    healthcheck:
+      test: ['CMD', 'pg_isready', '-U', '${DB_USER}', '-d', '${DB_NAME}']
+      interval: 1s
+      timeout: 5s
+      retries: 10
